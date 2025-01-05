@@ -19,6 +19,9 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -149,6 +152,13 @@ class PetController {
 		owner.addPet(pet);
 		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "Pet details has been edited");
+		return "redirect:/owners/{ownerId}";
+	}
+
+	@PostMapping("/pets/{petId}/delete")
+	public String deletePet(Owner owner, @Valid Pet pet) {
+		owner.deletePet(pet);
+		this.owners.save(owner);
 		return "redirect:/owners/{ownerId}";
 	}
 
