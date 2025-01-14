@@ -77,6 +77,11 @@
             <tr>
               <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/edit}">Edit Pet</a></td>
               <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}">Add Visit</a></td>
+              <td>
+                <form th:action="@{__${owner.id}__/pets/__${pet.id}__/delete}" method="post">
+                  <input type="submit" class="btn btn-primary" value="Delete" />
+                </form>
+              </td>
             </tr>
           </table>
         </td>

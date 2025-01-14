@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.owner;
+package org.springframework.samples.petclinic.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.model.Person;
 import org.springframework.util.Assert;
 
 import jakarta.persistence.CascadeType;
@@ -97,6 +96,10 @@ public class Owner extends Person {
 		if (pet.isNew()) {
 			getPets().add(pet);
 		}
+	}
+
+	public void deletePet(Pet pet) {
+		getPets().remove(pet);
 	}
 
 	/**

@@ -19,19 +19,21 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.hibernate.annotations.NotFound;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -152,4 +154,29 @@ class PetController {
 		return "redirect:/owners/{ownerId}";
 	}
 
+	@PostMapping("/pets/{petId}/delete")
+	public ResponseEntity<String>  deletePet(
+		@RequestHeader(value = "Authorization", required = false) String authHeader,
+		@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId) {
+
+		if (!isValidToken(authHeader)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body("Unauthorized: Invalid or missing token");
+		}
+
+		Owner owner = this.findOwner(ownerId);
+
+		Pet optionalPet = this.findPet(ownerId, petId);
+		if (optionalPet == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body("Pet with ID " + petId + " not found");
+		}
+		owner.deletePet(optionalPet);
+
+		return ResponseEntity.ok("Pet with ID " + petId + " was successfully deleted");
+	}
+
+	private boolean isValidToken(String token) {
+		return "valid-token".equals(token);
+	}
 }
